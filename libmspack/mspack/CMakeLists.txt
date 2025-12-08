@@ -89,6 +89,18 @@ if(ENABLE_SHARED_LIB)
     if(WIN32)
         set_target_properties(mspack PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
+
+    if(APPLE)
+        add_custom_command(
+            TARGET mspack
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E echo "Symlink: libmspack.${LT_VERSION}.dylib"
+            COMMAND ln -sf $<TARGET_FILE_NAME:mspack>
+                         libmspack.${LT_VERSION}.dylib
+            WORKING_DIRECTORY $<TARGET_FILE_DIR:mspack>
+        )
+    endif()
+
     install(TARGETS mspack DESTINATION ${CMAKE_INSTALL_LIBDIR})
     install(
         FILES
